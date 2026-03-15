@@ -30,6 +30,24 @@ make
 ./bfetch --Help
 ```
 
+## Austral Port
+
+There is also an Austral rewrite in [`bfetchaust/`](./bfetchaust).
+
+I did not want a shitty "ported" version that shells out to half the system and calls it done. The goal was to make the Austral build behave like the C build, keep the same output, keep the same one-buffer render style, and rebuild the missing OS bits that Austral does not hand you out of the box which taught me alot.
+
+That turned into a lot more work than the C version:
+
+- Austral does not come with the filesystem, directory walking, environment access, `/proc`, `/sys`, or package manager probing that this project demands.
+- The fetch logic had to stay in Austral, so the missing runtime pieces had to be built under `bfetchaust/runtime/` instead of cheating with shell commands.
+- Matching `fetch.c` exactly meant diffing live output against `./bfetch` and copying even the annoying little things, like GPU naming heuristics.
+- Austral's ownership and region rules are awesome and strick. Simple C cleanup patterns, early returns, and "just borrow this buffer here" code often had to be rewritten into stricter forms to make the compiler accept them.
+
+The result is good enough to be worth reading if you want to see how far Austral can be pushed on a low-level Linux CLI tool. Output parity is there on the tested paths. Speed parity is not quite there yet. The optimized Austral build is still slower than the C binary, but it is a lot closer once the generated C is compiled with real optimization flags.
+
+If you want the full breakdown , build steps, project layout, and notes on what had to change compared to the C version,and basically my glorified blog post, read [`bfetchaust/README.md`](./bfetchaust/README.md).
+do note that i included [`bfetchaust/bfetchaust.c`](./bfetchaust/bfetchaust.c) for study alone and should never be used other than for study and reading
+
 ## Comparisons
 
 | Tool       | Approx. Time | Approach                          |
