@@ -30,6 +30,21 @@ make
 ./bfetch --Help
 ```
 
+## Microoptimized C Notes
+
+The main C path is still the core of this repo, but i  wanted another where most of the serious performance work actually happens which is in [bfetchmicro](./bfetchmicro).
+
+This is the version that kept my rules while being pushed as far as possible:
+
+- no caching
+- no daemon
+- no subprocess cheating
+- real package counting
+- real GPU detection
+- one-buffer render path
+
+If you want the full writeup on what [`fetch.c`](./bfetchmicro/fetch.c) is actually doing, where the time goes, and why the remaining wall is mostly kernel and metadata overhead instead of "C being slow", read [`README.md`](./bfetchmicro/README.md).
+
 ## Austral Port
 
 There is also an Austral rewrite in [`bfetchaust/`](./bfetchaust).
@@ -47,6 +62,22 @@ The result is good enough to be worth reading if you want to see how far Austral
 
 If you want the full breakdown , build steps, project layout, and notes on what had to change compared to the C version,and basically my glorified blog post, read [`bfetchaust/README.md`](./bfetchaust/README.md).
 do note that i included [`bfetchaust/bfetchaust.c`](./bfetchaust/bfetchaust.c) for study alone and should never be used other than for study and reading
+
+## Assembly Rewrite
+
+There is also a static assembly rewrite in [`Bfetchasm/`](./Bfetchasm).
+
+This one exists because after enough C-side microoptimization, the obvious next question becomes whether the remaining gap is still in userspace glue or whether the kernel and metadata walks are already the real lower bound.
+
+That version is:
+
+- x86_64 assembly
+- syscall-only
+- statically linked
+- machine-targeted
+- still doing live checks instead of hardcoded bullshit
+
+The useful part is not just that it runs. The useful part is that it gives a cleaner answer about where the time is actually going. If you want the full build notes, design intent, and what the assembly rewrite did and did not prove, read [`README.md`](./bfetchasm/README.md).
 
 ## Comparisons
 
