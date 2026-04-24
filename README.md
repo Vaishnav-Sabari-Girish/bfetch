@@ -15,7 +15,7 @@ A lightweight, ultra-optimized system fetch tool written in C.
   - **Pacman**: Optimized directory entry counting.
   - **Flatpak & Snap**: Native filesystem-based counting.
 - **Zero-Copy Architecture**: Minimal memory allocations and no subprocess spawning.
-- **Aesthetic**: Custom professional ASCII art for **CachyOS**, **Gentoo**, and **Bedrock Linux**.
+- **Aesthetic**: Custom professional ASCII art for **CachyOS**, **Gentoo**, **Endeavour OS**, and **Bedrock Linux**.
 
 ## Usage
 
