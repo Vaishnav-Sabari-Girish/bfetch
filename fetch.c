@@ -48,6 +48,7 @@ typedef enum {
     SYSTEM_BEDROCK,
     SYSTEM_GENTOO,
     SYSTEM_CACHYOS,
+    SYSTEM_ENDEAVOUROS,
     SYSTEM_OTHER
 } system_type_t;
 
@@ -508,6 +509,7 @@ static system_type_t get_distro_and_type(char* distro) {
         if (strcasestr(buf, "cachyos")) type = SYSTEM_CACHYOS;
         else if (strcasestr(buf, "gentoo")) type = SYSTEM_GENTOO;
         else if (strcasestr(buf, "bedrock")) type = SYSTEM_BEDROCK;
+        else if (strcasestr(buf, "endeavouros") || strcasestr(buf, "endeavour")) type = SYSTEM_ENDEAVOUROS;
     }
     
     if (type == SYSTEM_OTHER && access("/bedrock", F_OK) == 0) type = SYSTEM_BEDROCK;
@@ -640,9 +642,38 @@ static void print_cachyos_fetch(const struct sysinfo_fast* info) {
     OUT(RESET BOLD " └──┘" RESET "\n");
 }
 
+static void print_endeavouros_fetch(const struct sysinfo_fast* info) {
+    OUT(RESET BOLD " ┌──┐" NORD1 BOLD " ┌──────────────────────────────────┐ " NORD12 BOLD "┌─────┐\n");
+    OUT(RESET BOLD " │" NORD1 "▒▒" RESET BOLD "│" NORD1 BOLD " │────────────────" NORD11 "\\" NORD1 "─────────────────│ " NORD12 BOLD "│  E  │\n");
+    OUT(RESET BOLD " │" NORD0 "██" RESET BOLD "│" NORD1 BOLD " │───────────────" NORD11 "\\\\" NORD12 "\\" NORD1 "────────────────│ " NORD12 BOLD "│  n  │\n");
+    OUT(RESET BOLD " │" NORD1 "██" RESET BOLD "│" NORD1 BOLD " │──────────────" NORD11 "\\\\\\" NORD12 "\\\\" NORD1 "───────────────│ " NORD12 BOLD "│  d  │\n");
+    OUT(RESET BOLD " │" NORD11 "██" RESET BOLD "│" NORD1 BOLD " │─────────────" NORD11 "\\\\\\\\" NORD12 "\\\\" NORD15 "\\" NORD1 "──────────────│ " NORD12 BOLD "│  e  │\n");
+    OUT(RESET BOLD " │" NORD12 "██" RESET BOLD "│" NORD1 BOLD " │────────────" NORD11 "\\\\\\\\\\" NORD12 "\\\\" NORD15 "\\\\" NORD1 "─────────────│ " NORD12 BOLD "│  a  │\n");
+    OUT(RESET BOLD " │" NORD13 "██" RESET BOLD "│" NORD1 BOLD " │───────────" NORD11 "\\\\\\\\\\" NORD12 "\\\\" NORD15 "\\\\" NORD12 "/" NORD1 "─────────────│ " NORD12 BOLD "│  v  │\n");
+    OUT(RESET BOLD " │" NORD14 "██" RESET BOLD "│" NORD1 BOLD " │──────────" NORD11 "\\\\\\\\\\" NORD12 "\\\\" NORD15 "\\\\" NORD12 "///" NORD1 "────────────│ " NORD12 BOLD "│  o  │\n");
+    OUT(RESET BOLD " │" NORD7 "██" RESET BOLD "│" NORD1 BOLD " │─────────" NORD11 "\\\\\\\\\\" NORD12 "\\\\" NORD15 "\\\\" NORD12 "/////" NORD1 "───────────│ " NORD12 BOLD "│  u  │\n");
+    OUT(RESET BOLD " │" NORD8 "██" RESET BOLD "│" NORD1 BOLD " │────────" NORD11 "\\\\\\\\\\" NORD12 "\\\\" NORD15 "\\\\" NORD12 "///////" NORD1 "──────────│ " NORD12 BOLD "│  r  │\n");
+    OUT(RESET BOLD " │" NORD9 "██" RESET BOLD "│" NORD1 BOLD " │───────" NORD11 "\\\\\\\\\\" NORD12 "\\\\" NORD15 "\\\\" NORD12 "/////////" NORD1 "─────────│ " NORD12 BOLD "└─────┘\n");
+    OUT(RESET BOLD " │" NORD10 "██" RESET BOLD "│" NORD1 BOLD " │──────" NORD11 "\\\\\\\\\\" NORD12 "\\\\" NORD15 "\\\\" NORD12 "///////////" NORD1 "────────│\n");
+    OUT(RESET BOLD " │" NORD15 "██" RESET BOLD "│" NORD1 BOLD " │─────" NORD11 "\\\\\\" NORD12 "\\\\" NORD15 "//////////////////" NORD1 "──────│\n");
+    OUT(RESET BOLD " │" NORD7 "██" RESET BOLD "│" NORD1 BOLD " └──────────────────────────────────┘\n");
+    OUT(RESET BOLD " │" NORD8 "██" RESET BOLD "│ " NORD12 "Distro: " NORD4 "%s\n", info->distro);
+    OUT(RESET BOLD " │" NORD9 "██" RESET BOLD "│ " NORD12 "Kernel: " NORD4 "%s\n", info->kernel);
+    OUT(RESET BOLD " │" NORD10 "██" RESET BOLD "│ " NORD15 "Uptime: " NORD4 "%s\n", info->uptime);
+    OUT(RESET BOLD " │" NORD15 "██" RESET BOLD "│ " NORD15 "WM: " NORD4 "%s\n", info->wm);
+    OUT(RESET BOLD " │" NORD11 "██" RESET BOLD "│ " NORD15 "Packages: " NORD4 "%s\n", info->packages);
+    OUT(RESET BOLD " │" NORD12 "██" RESET BOLD "│ " NORD13 "Terminal: " NORD4 "%s\n", info->terminal);
+    OUT(RESET BOLD " │" NORD13 "██" RESET BOLD "│ " NORD13 "Memory: " NORD4 "%s\n", info->memory);
+    OUT(RESET BOLD " │" NORD14 "██" RESET BOLD "│ " NORD13 "Shell: " NORD4 "%s\n", info->shell);
+    OUT(RESET BOLD " │" NORD7 "██" RESET BOLD "│ " NORD9 "CPU: " NORD4 "%s\n", info->cpu);
+    OUT(RESET BOLD " │" NORD1 "▒▒" RESET BOLD "│ " NORD9 "GPU: " NORD4 "%s\n", info->gpu);
+    OUT(RESET BOLD " └──┘" RESET "\n");
+}
+
 static void print_fetch(const struct sysinfo_fast* info) {
     if (info->system_type == SYSTEM_GENTOO) print_gentoo_fetch(info);
     else if (info->system_type == SYSTEM_CACHYOS) print_cachyos_fetch(info);
+    else if (info->system_type == SYSTEM_ENDEAVOUROS) print_endeavouros_fetch(info);  // <-- add
     else print_bedrock_fetch(info);
 }
 
@@ -653,6 +684,7 @@ int main(int argc, char* argv[]) {
         if (strcmp(argv[i], "--gentoo") == 0) force_type = SYSTEM_GENTOO;
         else if (strcmp(argv[i], "--cachyos") == 0) force_type = SYSTEM_CACHYOS;
         else if (strcmp(argv[i], "--bedrock") == 0) force_type = SYSTEM_BEDROCK;
+        else if (strcmp(argv[i], "--endeavouros") == 0) force_type = SYSTEM_ENDEAVOUROS;
         else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
             printf("bfetch version 2.4.0-fastasf\n"); return 0;
         } else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "--Help") == 0) {
