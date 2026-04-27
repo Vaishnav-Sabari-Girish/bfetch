@@ -694,6 +694,7 @@ int main(int argc, char* argv[]) {
             printf("  -h, --Help       Show this help\n");
             printf("  --gentoo         Force Gentoo mode\n");
             printf("  --cachyos        Force CachyOS mode\n");
+            printf("  --endeavouros    Force EndeavourOS mode\n");
             printf("  --bedrock        Force Bedrock mode\n");
             return 0;
         }
